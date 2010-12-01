@@ -1,0 +1,19 @@
+{
+  "name": "Link search",
+  "version": "1.0",
+  "description": "Search and select links on a page using ' charachter. Similar to FF functionality",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["jquery-1.4.4.min.js","search.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ]
+}
+
