@@ -8,7 +8,13 @@ var initializeOnDomReady = function() {
 },
 
 onKeydown = function(event) {
+    if (insideInputField(event)) {
+        exitSearchMode(); // even if we are not in search this is ok
+        return true;
+    }
+
     console.log("onKeydown, keyCode = " + event.keyCode);
+
     if (searchMode) {
         if ( event.keyCode == 27 ) { // escaping search mode
             exitSearchMode();
@@ -25,15 +31,23 @@ onKeydown = function(event) {
             event.preventDefault();
             event.stopPropagation();  
         } else if (event.keyCode == 114 ) { // F3
+            console.log("F3 pressed");
             f3Count++;
             doSearch(searchString);
             event.preventDefault();
             event.stopPropagation();  
         }
-        return false;
     } 
+    console.log("exiting onKeydown() ");
+    return true;
 },
 onKeypress= function(event) {
+
+    if (insideInputField(event)) {
+        exitSearchMode(); // even if we are not in search this is ok
+        return true;
+    }
+
     console.log("onKeypress, keyCode = " + event.keyCode);
     if (searchMode) {
         if ( event.keyCode == 27 ) { // escaping search mode
@@ -63,13 +77,8 @@ onKeypress= function(event) {
 doSearch = function(text) {
     console.log('I am searching for: ' + searchString);
     //clear previous highlighted result
-    $("span.highlight").each(function() {
-        this.parentNode.firstChild.nodeName;
-        with (this.parentNode) {
-            replaceChild(this.firstChild, this);
-            normalize();
-        }
-    });
+    clearSelections();
+
     //    elem = $("a:contains('" + text + "')");
     // do case insensetive contains
     elem = $("a").filter(function() {
@@ -80,7 +89,6 @@ doSearch = function(text) {
         index = f3Count % elem.length;
         console.log(elem[0]);
         elem[index].focus();
-        console.log("over");
         // highlight the mattched bit
         if (elem[index].firstChild && elem[index].firstChild.nodeType == 3) {
             node = elem[index].firstChild;
@@ -100,10 +108,32 @@ doSearch = function(text) {
     }
 },
 
+insideInputField = function(event) {
+    console.log(event.srcElement);
+    if (event.srcElement && event.srcElement.nodeName.toUpperCase() == 'INPUT' ) {
+        if ($(event.srcElement).attr("type").toUpperCase() == "TEXT" || 
+            $(event.srcElement).attr("type").toUpperCase() == "TEXTAREA" ) {
+            return true;
+        }
+    }
+    return false;
+},
+
+clearSelections = function() {
+    $("span.highlight").each(function() {
+        this.parentNode.firstChild.nodeName;
+        with (this.parentNode) {
+            replaceChild(this.firstChild, this);
+            normalize();
+        }
+    });
+},
+
 exitSearchMode = function(){
     searchString = "";
     searchMode = false;
     f3Count = 0;
+    clearSelections();
 };
 
 window.addEventListener("DOMContentLoaded", initializeOnDomReady);

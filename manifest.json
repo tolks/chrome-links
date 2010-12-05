@@ -1,7 +1,7 @@
 {
-  "name": "Link search",
+  "name": "Find Links As You Type",
   "version": "1.0",
-  "description": "Search and select links on a page using ' charachter. Similar to FF functionality",
+  "description": "Search and select links on a page using ' charachter. Similar to FF 'Find Links As You Type' functionality",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
